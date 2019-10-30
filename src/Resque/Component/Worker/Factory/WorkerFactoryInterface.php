@@ -17,6 +17,7 @@ interface WorkerFactoryInterface
      * Create worker from ID.
      *
      * @param $workerId
+     *
      * @return WorkerInterface
      */
     public function createWorkerFromId($workerId);

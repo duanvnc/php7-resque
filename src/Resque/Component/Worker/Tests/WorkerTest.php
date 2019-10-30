@@ -107,15 +107,18 @@ class WorkerTest extends PHPUnit_Framework_TestCase
      * @dataProvider dataProviderWorkerPerformEvents
      *
      * @param int $expectedCount The number of times an event should have been triggered
-     * @param string $eventName The event name in question
-     * @param string $jobClass A job class to ask perform to do work on
+     * @param string $eventName  The event name in question
+     * @param string $jobClass   A job class to ask perform to do work on
      */
     public function testWorkerPerformEmitsCorrectEvents($expectedCount, $eventName, $jobClass)
     {
         return $this->markTestIncomplete();
 
         $eventDispatcher = new EventDispatcher();
-        $this->worker = new Worker($this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'), $eventDispatcher);
+        $this->worker = new Worker(
+            $this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'),
+            $eventDispatcher
+        );
 
         $eventTriggered = 0;
         $eventDispatcher->addListener(
@@ -147,26 +150,29 @@ class WorkerTest extends PHPUnit_Framework_TestCase
 
     public function dataProviderWorkerPerformEvents()
     {
-        return array(
+        return [
             // Job that doesn't implement "PerformantJobInterface".
-            array(0, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'),
-            array(0, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'),
-            array(1, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'),
+            [0, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'],
+            [0, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'],
+            [1, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\NoPerformMethod'],
             // Normal, expected to work job.
-            array(1, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\Simple'),
-            array(1, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\Simple'),
-            array(0, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\Simple'),
+            [1, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\Simple'],
+            [1, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\Simple'],
+            [0, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\Simple'],
             // Job that will fail.
-            array(1, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\Failure'),
-            array(0, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\Failure'),
-            array(1, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\Failure'),
-        );
+            [1, ResqueJobEvents::BEFORE_PERFORM, 'Resque\Component\Job\Tests\Jobs\Failure'],
+            [0, ResqueJobEvents::PERFORMED, 'Resque\Component\Job\Tests\Jobs\Failure'],
+            [1, ResqueJobEvents::FAILED, 'Resque\Component\Job\Tests\Jobs\Failure'],
+        ];
     }
 
     public function testBeforePerformEventCanStopWork()
     {
         $eventDispatcher = new EventDispatcher();
-        $this->worker = new Worker($this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'), $eventDispatcher);
+        $this->worker = new Worker(
+            $this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'),
+            $eventDispatcher
+        );
 
         $eventDispatcher->addListener(
             'resque.job.before_perform',
@@ -205,7 +211,10 @@ class WorkerTest extends PHPUnit_Framework_TestCase
     {
         return $this->markTestIncomplete();
         $eventDispatcher = new EventDispatcher();
-        $this->worker = new Worker($this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'), $eventDispatcher);
+        $this->worker = new Worker(
+            $this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'),
+            $eventDispatcher
+        );
 
         $eventTriggered = 0;
         $eventDispatcher->addListener(
@@ -237,21 +246,18 @@ class WorkerTest extends PHPUnit_Framework_TestCase
 
         $mockWorker = $this->getMock(
             'Resque\Component\Worker\Worker',
-            array('workComplete'),
-            array(array($queue))
+            ['workComplete'],
+            [[$queue]]
         );
-        $mockWorker
-            ->expects($this->once())
-            ->method('workComplete')
-            ->will($this->returnValue(null));
+        $mockWorker->expects($this->once())->method('workComplete')->will($this->returnValue(null));
         $mockWorker->work(0);
 
         $currentJob = $mockWorker->getCurrentJob();
 
         $this->assertNotNull($currentJob);
         $this->assertEquals($job->getId(), $currentJob->getId());
-        $this->assertTrue($this->redis->exists('worker:' . $mockWorker));
-        $redisCurrentJob = json_decode($this->redis->get('worker:' . $mockWorker), true);
+        $this->assertTrue($this->redis->exists('worker:'.$mockWorker));
+        $redisCurrentJob = json_decode($this->redis->get('worker:'.$mockWorker), true);
         $payload = json_decode($redisCurrentJob['payload'], true);
         $this->assertEquals($job->getId(), $payload['id']);
     }
@@ -318,7 +324,7 @@ class WorkerTest extends PHPUnit_Framework_TestCase
         $job = $this->worker->reserve();
         $this->worker->workingOn($job);
         $this->worker->doneWorking();
-        $this->assertEquals(array(), $this->worker->job());
+        $this->assertEquals([], $this->worker->job());
     }
 
     public function testWorkerRecordsWhatItIsWorkingOn()
@@ -328,9 +334,9 @@ class WorkerTest extends PHPUnit_Framework_TestCase
         $this->worker->setLogger(new Resque_Log());
         $this->worker->registerWorker();
 
-        $payload = array(
-            'class' => 'Test_Job'
-        );
+        $payload = [
+            'class' => 'Test_Job',
+        ];
         $job = new Resque_Job('jobs', $payload);
         $this->worker->workingOn($job);
 
@@ -348,11 +354,11 @@ class WorkerTest extends PHPUnit_Framework_TestCase
 
         $this->worker = $this->getMock(
             'Resque\Component\Worker\Worker',
-            array('perform', 'reserve'),
-            array(
+            ['perform', 'reserve'],
+            [
                 $this->getMock('Resque\Component\Job\Factory\JobInstanceFactoryInterface'),
                 $this->getMock('Resque\Component\Core\Event\EventDispatcherInterface'),
-            )
+            ]
         );
         $this->worker->expects($this->at(0))->method('reserve')->will($this->returnValue($job));
         $this->worker->expects($this->at(1))->method('perform')->will($this->returnValue(null));

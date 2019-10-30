@@ -9,14 +9,12 @@ use Resque\Component\Job\Model\TrackableJobInterface;
 /**
  * Status tracker/information for a job.
  */
-class RedisJobTracker implements
-    JobTrackerInterface,
-    RedisClientAwareInterface
+class RedisJobTracker implements JobTrackerInterface, RedisClientAwareInterface
 {
-    public static $completedStates = array(
+    public static $completedStates = [
         JobInterface::STATE_FAILED,
         JobInterface::STATE_COMPLETE,
-    );
+    ];
 
     /**
      * @var RedisClientInterface
@@ -40,11 +38,12 @@ class RedisJobTracker implements
      * Get redis key
      *
      * @param JobInterface $job
+     *
      * @return string
      */
     protected function getRedisKey(JobInterface $job)
     {
-        return 'job:' . $job->getId() . ':status';
+        return 'job:'.$job->getId().':status';
     }
 
     /**
@@ -60,10 +59,10 @@ class RedisJobTracker implements
      */
     public function track(TrackableJobInterface $job)
     {
-        $statusPacket = array(
+        $statusPacket = [
             'status' => $job->getState(),
             'updated' => date('c'),
-        );
+        ];
 
         $this->redis->set($this->getRedisKey($job), json_encode($statusPacket));
 

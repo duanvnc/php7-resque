@@ -20,7 +20,7 @@ class JobInstanceEvent extends WorkerJobEvent
     public function __construct(WorkerInterface $worker, JobInterface $job, PerformantJobInterface $instance)
     {
         $this->instance = $instance;
-        parent::__construct($worker,$job);
+        parent::__construct($worker, $job);
     }
 
     /**

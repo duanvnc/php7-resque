@@ -9,9 +9,7 @@ use Resque\Component\Worker\Registry\WorkerRegistryAdapterInterface;
 /**
  * Resque redis worker registry adapter.
  */
-class RedisWorkerRegistryAdapter implements
-    WorkerRegistryAdapterInterface,
-    RedisClientAwareInterface
+class RedisWorkerRegistryAdapter implements WorkerRegistryAdapterInterface, RedisClientAwareInterface
 {
     /**
      * @var RedisClientInterface A Redis client.
@@ -46,20 +44,21 @@ class RedisWorkerRegistryAdapter implements
         $currentJob = $worker->getCurrentJob();
 
         $this->redis->sadd('workers', $worker->getId());
-        $this->redis->set('worker:' . $worker->getId() . ':started', date('c')); // @todo worker->getStartedAt()
+        $this->redis->set('worker:'.$worker->getId().':started', date('c')); // @todo worker->getStartedAt()
 
         if ($currentJob) {
             $payload = json_encode(
-                array(
-                    'queue' => ($currentJob instanceof OriginQueueAwareInterface) ? $currentJob->getOriginQueue() : null,
+                [
+                    'queue' => ($currentJob instanceof OriginQueueAwareInterface) ? $currentJob->getOriginQueue(
+                    ) : null,
                     'run_at' => date('c'), // @todo currentJob->getRunAt
                     'payload' => $currentJob->encode(),
-                )
+                ]
             );
 
-            $this->redis->set('worker:' . $worker->getId(), $payload);
+            $this->redis->set('worker:'.$worker->getId(), $payload);
         } else {
-            $this->redis->del('worker:' . $worker->getId());
+            $this->redis->del('worker:'.$worker->getId());
         }
 
         // @todo use multi -> exec or something.
@@ -81,8 +80,8 @@ class RedisWorkerRegistryAdapter implements
         $id = $worker->getId();
 
         $this->redis->srem('workers', $id);
-        $this->redis->del('worker:' . $id);
-        $this->redis->del('worker:' . $id . ':started');
+        $this->redis->del('worker:'.$id);
+        $this->redis->del('worker:'.$id.':started');
 
         return $this;
     }
@@ -95,7 +94,7 @@ class RedisWorkerRegistryAdapter implements
         $workerIds = $this->redis->smembers('workers');
 
         if (!is_array($workerIds)) {
-            return array();
+            return [];
         }
 
         return $workerIds;

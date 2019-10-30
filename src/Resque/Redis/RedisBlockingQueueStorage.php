@@ -21,14 +21,15 @@ class BlockingRedisQueue extends RedisQueue
      * @deprecated should just dequeue() but queue might have setBlocking()?
      *
      * @param array $queues
-     * @param int $timeout
+     * @param int   $timeout
+     *
      * @return null|array   Decoded item from the queue.
      */
     public function blpop(array $queues, $timeout)
     {
-        $list = array();
+        $list = [];
         foreach ($queues AS $queue) {
-            $list[] = 'queue:' . $queue;
+            $list[] = 'queue:'.$queue;
         }
 
         $item = $this->redis->blpop($list, (int)$timeout);
@@ -42,11 +43,11 @@ class BlockingRedisQueue extends RedisQueue
          * But the blpop is a bit different. It returns the name as prefix:queue:name
          * So we need to strip off the prefix:queue: part
          */
-        $queue = substr($item[0], strlen($this->redis->getPrefix() . 'queue:'));
+        $queue = substr($item[0], strlen($this->redis->getPrefix().'queue:'));
 
-        return array(
+        return [
             'queue' => $queue,
-            'payload' => json_decode($item[1], true)
-        );
+            'payload' => json_decode($item[1], true),
+        ];
     }
 }

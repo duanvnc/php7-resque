@@ -10,6 +10,7 @@ interface WorkerRegistryAdapterInterface
      * Save worker.
      *
      * @param WorkerInterface $worker The worker to save to database.
+     *
      * @return void
      */
     public function save(WorkerInterface $worker);
@@ -18,6 +19,7 @@ interface WorkerRegistryAdapterInterface
      * Has queue?
      *
      * @param WorkerInterface $worker
+     *
      * @return bool
      */
     public function has(WorkerInterface $worker);
@@ -26,6 +28,7 @@ interface WorkerRegistryAdapterInterface
      * Delete queue.
      *
      * @param WorkerInterface $worker
+     *
      * @return integer The number of jobs removed.
      */
     public function delete(WorkerInterface $worker);

@@ -10,9 +10,7 @@ use Resque\Component\Queue\Registry\QueueRegistryAdapterInterface;
  *
  * Connects Redis in to the Resque core, and stores queues the original Resque way.
  */
-class RedisQueueRegistryAdapter implements
-    QueueRegistryAdapterInterface,
-    RedisClientAwareInterface
+class RedisQueueRegistryAdapter implements QueueRegistryAdapterInterface, RedisClientAwareInterface
 {
     /**
      * @var RedisClientInterface
@@ -41,11 +39,12 @@ class RedisQueueRegistryAdapter implements
      * Get storage key for given queue
      *
      * @param QueueInterface $queue
+     *
      * @return string
      */
     protected function getRedisKey(QueueInterface $queue)
     {
-        return 'queue:' . $queue->getName();
+        return 'queue:'.$queue->getName();
     }
 
     /**

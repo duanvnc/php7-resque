@@ -20,6 +20,7 @@ interface JobTrackerInterface
      * Is completed?
      *
      * @param JobInterface $job
+     *
      * @return boolean True job has been tracked, and it's status a completed one.
      */
     public function isComplete(JobInterface $job);
@@ -33,12 +34,14 @@ interface JobTrackerInterface
      * Fetch the status for the job being monitored.
      *
      * @param JobInterface $job
+     *
      * @return mixed null if the state is not being monitored, otherwise the last known state of the job.
      */
     public function get(JobInterface $job);
 
     /**
      * Stop tracking the state of a JobInterface
+     *
      * @param JobInterface $job
      */
     public function stop(JobInterface $job);

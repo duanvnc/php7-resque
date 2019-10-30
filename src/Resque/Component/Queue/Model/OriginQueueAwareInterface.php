@@ -13,6 +13,7 @@ interface OriginQueueAwareInterface
      * Set origin queue.
      *
      * @param QueueInterface $queue The queue the subject came from.
+     *
      * @return $this
      */
     public function setOriginQueue(QueueInterface $queue);

@@ -15,13 +15,13 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * @var array Array containing all registered callbacks, indexed by event name.
      */
-    protected $listeners = array();
+    protected $listeners = [];
 
     /**
      * Dispatch an event
      *
-     * @param string $event The event to dispatch to relevant listeners.
-     * @param mixed $eventContext The event context.
+     * @param string $event        The event to dispatch to relevant listeners.
+     * @param mixed  $eventContext The event context.
      */
     public function dispatch($event, $eventContext = null)
     {
@@ -40,7 +40,7 @@ class EventDispatcher implements EventDispatcherInterface
      *
      * @throws \InvalidArgumentException when $callback is not a callable.
      *
-     * @param string $event The name of the event to listen for.
+     * @param string   $event    The name of the event to listen for.
      * @param callable $callback Any callback callable by call_user_func_array.
      */
     public function addListener($event, $callback)
@@ -50,7 +50,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
 
         if (false === isset($this->listeners[$event])) {
-            $this->listeners[$event] = array();
+            $this->listeners[$event] = [];
         }
 
         $this->listeners[$event][] = $callback;
@@ -59,8 +59,8 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * Stop a given callback from listening on a specific event.
      *
-     * @param string $event The name of the event to stop listening for.
-     * @param mixed $callback The callback as defined when addListener() was called.
+     * @param string $event    The name of the event to stop listening for.
+     * @param mixed  $callback The callback as defined when addListener() was called.
      */
     public function removeListener($event, $callback)
     {
@@ -83,12 +83,13 @@ class EventDispatcher implements EventDispatcherInterface
      * Get registered listeners.
      *
      * @param string|null $event The name of the event get registered listeners for.
+     *
      * @return array If $event is null all event listeners are returned, keyed by event name.
      */
     public function getListeners($event = null)
     {
         if (null !== $event) {
-            return isset($this->listeners[$event]) ? $this->listeners[$event] : array();
+            return isset($this->listeners[$event]) ? $this->listeners[$event] : [];
         }
 
         return $this->listeners;
@@ -99,6 +100,6 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function clearListeners()
     {
-        $this->listeners = array();
+        $this->listeners = [];
     }
 }

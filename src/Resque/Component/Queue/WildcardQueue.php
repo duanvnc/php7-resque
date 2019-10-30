@@ -28,12 +28,12 @@ class WildcardQueue extends Queue
     protected $prefix;
 
     /**
-     * @param string|null $prefix
+     * @param string|null            $prefix
      * @param QueueRegistryInterface $registry
      */
     public function __construct(QueueRegistryInterface $registry, $prefix = null)
     {
-        $this->name = $prefix . '*';
+        $this->name = $prefix.'*';
         $this->prefix = $prefix;
         $this->registry = $registry;
     }

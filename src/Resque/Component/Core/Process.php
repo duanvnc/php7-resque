@@ -50,9 +50,10 @@ class Process
      * @deprecated This makes no sense when you consider that in theory Process is the thing that knows about
      *             and manages PIDs.
      *
-     * @todo see Resque\Component\Core\Foreman::startWorker() it calls self::setPid().
+     * @todo       see Resque\Component\Core\Foreman::startWorker() it calls self::setPid().
      *
      * @param integer $pid A process id.
+     *
      * @return $this
      */
     public function setPid($pid)
@@ -133,6 +134,7 @@ class Process
      * Wait for process to exit/die
      *
      * @param $options
+     *
      * @return int The status code from the process exit.
      */
     public function wait($options = 0)
@@ -150,6 +152,7 @@ class Process
      * Attempt to kill the process
      *
      * @param int $signal The signal to send to the process
+     *
      * @return $this
      */
     public function kill($signal = SIGKILL)
@@ -220,7 +223,7 @@ class Process
         }
 
         // @todo, it is the workers domain to set this, move this logic back to the worker.
-        $processTitle = 'resque-' . Resque::VERSION . ': ' . $title;
+        $processTitle = 'resque-'.Resque::VERSION.': '.$title;
 
         if (function_exists('cli_set_process_title')) {
             // @todo remove @, it is throwing errors on my mac.

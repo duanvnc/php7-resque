@@ -16,7 +16,7 @@ class QueueRegistrySpec extends ObjectBehavior
         QueueRegistryAdapterInterface $adapter,
         QueueFactoryInterface $factory
     ) {
-       $this->beConstructedWith($eventDispatcher, $adapter, $factory);
+        $this->beConstructedWith($eventDispatcher, $adapter, $factory);
     }
 
     function it_is_initializable()
@@ -29,9 +29,9 @@ class QueueRegistrySpec extends ObjectBehavior
         QueueFactoryInterface $factory,
         QueueInterface $queue
     ) {
-        $adapter->all()->willReturn(array('important-things'));
+        $adapter->all()->willReturn(['important-things']);
         $factory->createQueue('important-things')->willReturn($queue);
 
-        $this->all()->shouldReturn(array('important-things' => $queue));
+        $this->all()->shouldReturn(['important-things' => $queue]);
     }
 }

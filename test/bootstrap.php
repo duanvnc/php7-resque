@@ -4,7 +4,7 @@
  * Resque test bootstrap file - sets up a test environment.
  *
  * @package        Resque/Tests
- * @author        Chris Boulton <chris@bigcommerce.com>
+ * @author         Chris Boulton <chris@bigcommerce.com>
  * @license        http://www.opensource.org/licenses/mit-license.php
  */
 

@@ -28,13 +28,13 @@ class WorkerSpec extends ObjectBehavior
         JobInterface $job,
         PerformantJobInterface $targetClass
     ) {
-        $args = array(
+        $args = [
             1,
-            array(
+            [
                 'foo' => 'test',
-            ),
+            ],
             'key' => 'baz',
-        );
+        ];
 
         $job->getOriginQueue()->willReturn();
         $job->getId()->willReturn();

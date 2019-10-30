@@ -10,6 +10,7 @@ interface QueueRegistryAdapterInterface
      * Save queue.
      *
      * @param QueueInterface $queue
+     *
      * @return $this
      */
     public function save(QueueInterface $queue);
@@ -18,6 +19,7 @@ interface QueueRegistryAdapterInterface
      * Has queue?
      *
      * @param QueueInterface $queue
+     *
      * @return bool
      */
     public function has(QueueInterface $queue);
@@ -26,6 +28,7 @@ interface QueueRegistryAdapterInterface
      * Delete queue.
      *
      * @param QueueInterface $queue
+     *
      * @return integer The number of jobs removed.
      */
     public function delete(QueueInterface $queue);

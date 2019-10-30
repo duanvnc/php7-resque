@@ -15,9 +15,9 @@ interface FailureInterface
     /**
      * Record job failure
      *
-     * @param JobInterface $job The job that just failed to perform cleanly.
-     * @param \Exception $exception The exception for the cause of the failure.
-     * @param WorkerInterface $worker The worker that the job failed to perform with in.
+     * @param JobInterface    $job       The job that just failed to perform cleanly.
+     * @param \Exception      $exception The exception for the cause of the failure.
+     * @param WorkerInterface $worker    The worker that the job failed to perform with in.
      *
      * @return void
      */

@@ -16,7 +16,7 @@ class JobInstanceFactory implements JobInstanceFactoryInterface
 
         if (false === class_exists($class)) {
             throw new JobNotFoundException(
-                'Could not find job class "' . $class . '"'
+                'Could not find job class "'.$class.'"'
             );
         }
 

@@ -15,6 +15,7 @@ interface QueueFactoryInterface
      * Create queue.
      *
      * @param string $name The name of the queue.
+     *
      * @return QueueInterface The queue.
      */
     public function createQueue($name);

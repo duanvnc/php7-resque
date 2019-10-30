@@ -25,7 +25,7 @@ class EventDispatcherSpec extends ObjectBehavior
 
     public function it_accepts_listeners()
     {
-        $callable = function() {
+        $callable = function () {
             throw new Exception('Did not expect listeners to be called');
         };
 
@@ -39,15 +39,19 @@ class EventDispatcherSpec extends ObjectBehavior
 
     public function it_rejects_listeners_that_are_not_callable()
     {
-        $this->shouldThrow('InvalidArgumentException')->during('addListener', array('baz', 1234));
+        $this->shouldThrow('InvalidArgumentException')->during('addListener', ['baz', 1234]);
     }
 
     public function it_can_remove_a_specific_listener()
     {
-        $callable = function() {
+        $callable = function () {
             throw new Exception('Did not expect listeners to be called');
         };
-        $this->addListener('foo', function() {});
+        $this->addListener(
+            'foo',
+            function () {
+            }
+        );
         $this->addListener('bar', $callable);
         $this->addListener('baz', $callable);
         $this->getListeners()->shouldHaveCount(3);
@@ -58,7 +62,11 @@ class EventDispatcherSpec extends ObjectBehavior
 
     public function it_can_clear_all_listeners()
     {
-        $this->addListener('bar', function(){});
+        $this->addListener(
+            'bar',
+            function () {
+            }
+        );
         $this->getListeners()->shouldHaveCount(1);
         $this->clearListeners();
         $this->getListeners()->shouldHaveCount(0);

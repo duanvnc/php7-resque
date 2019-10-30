@@ -12,12 +12,12 @@ class SimpleLogger extends AbstractLogger
     /**
      * {@inheritDoc}
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         fwrite(
             STDOUT,
             sprintf(
-                '[%s][%s] %s' . PHP_EOL,
+                '[%s][%s] %s'.PHP_EOL,
                 $level,
                 strftime('%Y-%m-%d %T'),
                 $this->interpolate($message, $context)
@@ -30,16 +30,17 @@ class SimpleLogger extends AbstractLogger
      *
      * From PSR-3 doc
      *
-     * @param $message
+     * @param       $message
      * @param array $context
+     *
      * @return string
      */
-    protected function interpolate($message, array $context = array())
+    protected function interpolate($message, array $context = [])
     {
-        $replace = array();
+        $replace = [];
 
         foreach ($context as $key => $val) {
-            $replace['{' . $key . '}'] = $val;
+            $replace['{'.$key.'}'] = $val;
         }
 
         return strtr($message, $replace);

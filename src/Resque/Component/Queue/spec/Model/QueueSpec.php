@@ -42,9 +42,15 @@ class QueueSpec extends ObjectBehavior
         EventDispatcherInterface $eventDispatcher,
         JobInterface $job
     ) {
-        $eventDispatcher->dispatch(ResqueQueueEvents::JOB_PUSH, Argument::type('Resque\Component\Queue\Event\QueueJobEvent'))->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            ResqueQueueEvents::JOB_PUSH,
+            Argument::type('Resque\Component\Queue\Event\QueueJobEvent')
+        )->shouldBeCalled();
         $storage->enqueue($this, $job)->shouldBeCalled()->willReturn(true);
-        $eventDispatcher->dispatch(ResqueQueueEvents::JOB_PUSHED, Argument::type('Resque\Component\Queue\Event\QueueJobEvent'))->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            ResqueQueueEvents::JOB_PUSHED,
+            Argument::type('Resque\Component\Queue\Event\QueueJobEvent')
+        )->shouldBeCalled();
         $this->enqueue($job)->shouldReturn(true);
     }
 
@@ -53,9 +59,15 @@ class QueueSpec extends ObjectBehavior
         EventDispatcherInterface $eventDispatcher,
         JobInterface $job
     ) {
-        $eventDispatcher->dispatch(ResqueQueueEvents::JOB_PUSH, Argument::type('Resque\Component\Queue\Event\QueueJobEvent'))->shouldBeCalled();
+        $eventDispatcher->dispatch(
+            ResqueQueueEvents::JOB_PUSH,
+            Argument::type('Resque\Component\Queue\Event\QueueJobEvent')
+        )->shouldBeCalled();
         $storage->enqueue($this, $job)->shouldBeCalled()->willReturn(false);
-        $eventDispatcher->dispatch(ResqueQueueEvents::JOB_PUSHED, Argument::type('Resque\Component\Queue\Event\QueueJobEvent'))->shouldNotBeCalled();
+        $eventDispatcher->dispatch(
+            ResqueQueueEvents::JOB_PUSHED,
+            Argument::type('Resque\Component\Queue\Event\QueueJobEvent')
+        )->shouldNotBeCalled();
         $this->enqueue($job)->shouldReturn(false);
     }
 
@@ -66,11 +78,15 @@ class QueueSpec extends ObjectBehavior
     ) {
         $storage->dequeue($this)->shouldBeCalled()->willReturn($job);
 
-        $eventDispatcher->dispatch(ResqueQueueEvents::JOB_POPPED, Argument::type('Resque\Component\Queue\Event\QueueJobEvent'));
+        $eventDispatcher->dispatch(
+            ResqueQueueEvents::JOB_POPPED,
+            Argument::type('Resque\Component\Queue\Event\QueueJobEvent')
+        );
         $this->dequeue()->shouldReturn($job);
     }
 
-    function it_returns_null_on_dequeue_when_no_jobs() {
+    function it_returns_null_on_dequeue_when_no_jobs()
+    {
         $this->dequeue()->shouldReturn(null);
     }
 

@@ -46,16 +46,15 @@ class Foreman implements LoggerAwareInterface
     /**
      * Constructor.
      *
-     * @param WorkerRegistryInterface $workerRegistry
+     * @param WorkerRegistryInterface  $workerRegistry
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SystemInterface $system
+     * @param SystemInterface          $system
      */
     public function __construct(
         WorkerRegistryInterface $workerRegistry,
         EventDispatcherInterface $eventDispatcher,
         SystemInterface $system
-    )
-    {
+    ) {
         $this->logger = new NullLogger();
         $this->registry = $workerRegistry;
         $this->eventDispatcher = $eventDispatcher;
@@ -66,6 +65,7 @@ class Foreman implements LoggerAwareInterface
      * Set PSR-3 logger.
      *
      * @param LoggerInterface $logger
+     *
      * @return void
      */
     public function setLogger(LoggerInterface $logger)
@@ -80,9 +80,11 @@ class Foreman implements LoggerAwareInterface
      * the worker registry.
      *
      * @param WorkerInterface[] $workers An array of workers you would like forked into child processes and set
-     *                          on their way.
-     * @param bool $wait If true, this Foreman will wait for the workers to complete. This will guarantee workers are
-     *                   cleaned up after correctly, however this is not really practical for most purposes.
+     *                                   on their way.
+     * @param bool              $wait    If true, this Foreman will wait for the workers to complete. This will
+     *                                   guarantee workers are cleaned up after correctly, however this is not really
+     *                                   practical for most purposes.
+     *
      * @return void
      */
     public function work($workers, $wait = false)
@@ -113,6 +115,7 @@ class Foreman implements LoggerAwareInterface
      * Start worker.
      *
      * @param WorkerInterface $worker The worker to start.
+     *
      * @return void
      */
     public function startWorker(WorkerInterface $worker)
@@ -146,10 +149,10 @@ class Foreman implements LoggerAwareInterface
 
         $this->logger->info(
             'Successfully started worker {worker} with pid {childPid}',
-            array(
+            [
                 'worker' => $worker,
                 'childPid' => $child->getPid(),
-            )
+            ]
         );
     }
 
@@ -157,6 +160,7 @@ class Foreman implements LoggerAwareInterface
      * Deregister on worker exit.
      *
      * @param WorkerInterface $worker The worker to wait for exit and then deregister.
+     *
      * @throws ResqueRuntimeException when $worker fails to exit cleanly.
      * @return void
      */
@@ -204,7 +208,7 @@ class Foreman implements LoggerAwareInterface
                     continue;
                 }
 
-                $this->logger->warning('Pruning dead worker {worker}', array('worker' => $worker));
+                $this->logger->warning('Pruning dead worker {worker}', ['worker' => $worker]);
                 $this->registry->deregister($worker);
             }
         }
@@ -219,7 +223,7 @@ class Foreman implements LoggerAwareInterface
      */
     public function getLocalWorkerPids()
     {
-        $pids = array();
+        $pids = [];
         exec('ps -A -o pid,command | grep [r]esque', $cmdOutput); // @todo The hard coded [r]esque is dangerous.
         foreach ($cmdOutput as $line) {
             list($pids[],) = explode(' ', trim($line), 2);

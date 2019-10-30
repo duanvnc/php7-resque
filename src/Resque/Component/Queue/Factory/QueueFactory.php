@@ -6,8 +6,7 @@ use Resque\Component\Core\Event\EventDispatcherInterface;
 use Resque\Component\Queue\Model\Queue;
 use Resque\Component\Queue\Storage\QueueStorageInterface;
 
-class QueueFactory implements
-    QueueFactoryInterface
+class QueueFactory implements QueueFactoryInterface
 {
     /**
      * @var QueueStorageInterface
@@ -22,7 +21,7 @@ class QueueFactory implements
     /**
      * Constructor
      *
-     * @param QueueStorageInterface $storage
+     * @param QueueStorageInterface    $storage
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(QueueStorageInterface $storage, EventDispatcherInterface $eventDispatcher)
@@ -37,9 +36,7 @@ class QueueFactory implements
     public function createQueue($name)
     {
         return new Queue(
-            $name,
-            $this->storage,
-            $this->eventDispatcher
+            $name, $this->storage, $this->eventDispatcher
         );
     }
 }

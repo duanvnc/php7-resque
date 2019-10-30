@@ -107,12 +107,12 @@ class WorkerRegistrySpec extends ObjectBehavior
         WorkerInterface $workerRemote,
         WorkerInterface $workerLocal
     ) {
-        $adapter->all()->shouldBeCalled()->willReturn(array('remote:123', 'local:4556'));
+        $adapter->all()->shouldBeCalled()->willReturn(['remote:123', 'local:4556']);
 
         $workerFactory->createWorkerFromId('remote:123')->shouldBeCalled()->willReturn($workerRemote);
         $workerFactory->createWorkerFromId('local:4556')->shouldBeCalled()->willReturn($workerLocal);
 
-        $this->all()->shouldReturn(array($workerRemote, $workerLocal));
+        $this->all()->shouldReturn([$workerRemote, $workerLocal]);
     }
 
     function it_offloads_worker_persist_to_adapter(

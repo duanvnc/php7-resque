@@ -36,10 +36,10 @@ class WorkerFactory implements WorkerFactoryInterface
     /**
      * Constructor
      *
-     * @param QueueFactoryInterface $queueFactory
+     * @param QueueFactoryInterface       $queueFactory
      * @param JobInstanceFactoryInterface $jobFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param SystemInterface $system
+     * @param EventDispatcherInterface    $eventDispatcher
+     * @param SystemInterface             $system
      */
     public function __construct(
         QueueFactoryInterface $queueFactory,
@@ -59,8 +59,7 @@ class WorkerFactory implements WorkerFactoryInterface
     public function createWorker()
     {
         $worker = new Worker(
-            $this->jobInstanceFactory,
-            $this->eventDispatcher
+            $this->jobInstanceFactory, $this->eventDispatcher
         );
 
         $worker->setHostname($this->system->getHostname());
@@ -80,13 +79,12 @@ class WorkerFactory implements WorkerFactoryInterface
         list($hostname, $pid, $queues) = explode(':', $workerId, 3);
         $queues = explode(',', $queues);
 
-        if(!$queues){
+        if (!$queues) {
             throw new ResqueRuntimeException(sprintf("Invalid worker ID \"%s\"", $workerId));
         }
 
         $worker = new Worker(
-            $this->jobInstanceFactory,
-            $this->eventDispatcher
+            $this->jobInstanceFactory, $this->eventDispatcher
         );
         $worker->setHostname($hostname);
 

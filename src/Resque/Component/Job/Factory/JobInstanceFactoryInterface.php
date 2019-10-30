@@ -12,6 +12,7 @@ interface JobInstanceFactoryInterface
      * @throws \Resque\Component\Job\Exception\JobNotFoundException When the job class/service could not be found.
      *
      * @param JobInterface $job
+     *
      * @return \Resque\Component\Job\PerformantJobInterface The actual class/service that will perform.
      */
     public function createPerformantJob(JobInterface $job);

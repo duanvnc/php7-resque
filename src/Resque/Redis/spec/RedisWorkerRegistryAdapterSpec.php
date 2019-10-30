@@ -98,7 +98,7 @@ class RedisWorkerRegistryAdapterSpec extends ObjectBehavior
     }
 
     function it_correctly_counts_workers(
-       RedisClientInterface $redis
+        RedisClientInterface $redis
     ) {
         $redis->scard('workers')->shouldBeCalled()->willReturn(0);
         $this->count()->shouldReturn(0);
@@ -109,7 +109,7 @@ class RedisWorkerRegistryAdapterSpec extends ObjectBehavior
     function it_returns_all_registered_workers(
         RedisClientInterface $redis
     ) {
-        $redis->smembers('workers')->shouldBeCalled()->willReturn(array('remote:123', 'local:4556'));
-        $this->all()->shouldReturn(array('remote:123', 'local:4556'));
+        $redis->smembers('workers')->shouldBeCalled()->willReturn(['remote:123', 'local:4556']);
+        $this->all()->shouldReturn(['remote:123', 'local:4556']);
     }
 }

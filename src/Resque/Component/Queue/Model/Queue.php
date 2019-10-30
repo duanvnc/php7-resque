@@ -31,8 +31,8 @@ class Queue implements QueueInterface
     /**
      * Constructor.
      *
-     * @param string $name
-     * @param QueueStorageInterface $storage
+     * @param string                   $name
+     * @param QueueStorageInterface    $storage
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct($name, QueueStorageInterface $storage, EventDispatcherInterface $eventDispatcher)
@@ -97,7 +97,7 @@ class Queue implements QueueInterface
     /**
      * {@inheritDoc}
      */
-    public function remove($filter = array())
+    public function remove($filter = [])
     {
         return $this->storage->remove($this, $filter);
     }

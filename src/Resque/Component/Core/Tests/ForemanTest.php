@@ -19,20 +19,17 @@ class ForemanTest extends PHPUnit_Framework_TestCase
 
         $mockWorker = $this->getMock(
             'Resque\Component\Worker\Worker',
-            array('work'),
-            array($jobInstanceFactory, $eventDispatcher)
+            ['work'],
+            [$jobInstanceFactory, $eventDispatcher]
         );
 
-        $mockWorker
-            ->expects($this->any())
-            ->method('work')
-            ->will($this->returnValue(null));
+        $mockWorker->expects($this->any())->method('work')->will($this->returnValue(null));
 
-        $workers = array(
+        $workers = [
             clone $mockWorker,
             clone $mockWorker,
             clone $mockWorker,
-        );
+        ];
 
         $foreman->work($workers, true);
 

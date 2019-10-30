@@ -15,8 +15,11 @@ interface RedisClientInterface
     public function disconnect();
 
     public function set($key, $value);
+
     public function get($key);
+
     public function exists($key);
+
     public function expire($key, $ttl);
 
     /**
@@ -26,7 +29,7 @@ interface RedisClientInterface
 
     /**
      * @return int
-    */
+     */
     public function incr($key);
 
     /**
@@ -48,9 +51,13 @@ interface RedisClientInterface
      * @return string[]
      */
     public function smembers($key);
+
     public function sismember($key, $member);
+
     public function scard($key);
+
     public function sadd($key, $member);
+
     public function srem($key, $member);
 
     /**
@@ -84,7 +91,9 @@ interface RedisClientInterface
     public function rpoplpush($source, $destination);
 
     public function discard();
+
     public function exec();
+
     public function multi();
 
     /**

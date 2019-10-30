@@ -42,7 +42,7 @@ class ForemanSpec extends ObjectBehavior
         $system->getCurrentPid()->willReturn(2341);
         $system->getHostname()->shouldBeCalled()->willReturn('foo1.resque.com');
 
-        $workerRegistry->all()->shouldBeCalled()->willReturn(array($worker, $deadWorker1, $deadWorker2));
+        $workerRegistry->all()->shouldBeCalled()->willReturn([$worker, $deadWorker1, $deadWorker2]);
 
         $worker->getHostname()->shouldBeCalled()->willReturn('foo1.resque.com');
         $worker->getProcess()->shouldBeCalled()->willReturn($workerProcess);

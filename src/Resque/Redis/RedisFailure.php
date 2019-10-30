@@ -41,7 +41,7 @@ class RedisFailure implements FailureInterface, RedisClientAwareInterface
         $this->redis->rpush(
             'failed',
             json_encode(
-                array(
+                [
                     'failed_at' => date('c'),
                     'payload' => $job,
                     'exception' => get_class($exception),
@@ -49,7 +49,7 @@ class RedisFailure implements FailureInterface, RedisClientAwareInterface
                     'backtrace' => explode("\n", $exception->getTraceAsString()),
                     'worker' => $worker->getId(),
                     'queue' => ($queue instanceof QueueInterface) ? $queue->getName() : null,
-                )
+                ]
             )
         );
     }

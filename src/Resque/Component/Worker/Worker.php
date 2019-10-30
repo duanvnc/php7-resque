@@ -27,9 +27,7 @@ use Resque\Component\Worker\Model\WorkerInterface;
  *
  * The worker handles querying issued queues for jobs, processing them and handling the result.
  */
-class Worker implements
-    WorkerInterface,
-    LoggerAwareInterface
+class Worker implements WorkerInterface, LoggerAwareInterface
 {
     /**
      * @var string Identifier of this worker.
@@ -54,7 +52,7 @@ class Worker implements
     /**
      * @var array Array of all associated queues for this worker.
      */
-    protected $queues = array();
+    protected $queues = [];
 
     /**
      * @var string The hostname of this worker.
@@ -90,7 +88,7 @@ class Worker implements
      * Constructor
      *
      * @param JobInstanceFactoryInterface $jobInstanceFactory
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface    $eventDispatcher
      */
     public function __construct(
         JobInstanceFactoryInterface $jobInstanceFactory,
@@ -127,6 +125,7 @@ class Worker implements
      * Inject a logging object into the worker
      *
      * @param LoggerInterface $logger
+     *
      * @return null|void
      */
     public function setLogger(LoggerInterface $logger)
@@ -148,6 +147,7 @@ class Worker implements
 
     /**
      * @param Process $process
+     *
      * @return $this
      */
     public function setProcess(Process $process)
@@ -206,8 +206,11 @@ class Worker implements
 
             try {
                 $job = $this->reserve();
-            }catch(\Exception $ex){
-                $this->getLogger()->error('Failed to reserve due to exception "{message}", skipping', array('message'=>$ex->getMessage()));
+            } catch (\Exception $ex) {
+                $this->getLogger()->error(
+                    'Failed to reserve due to exception "{message}", skipping',
+                    ['message' => $ex->getMessage()]
+                );
                 continue;
             }
 
@@ -223,17 +226,31 @@ class Worker implements
                     new WorkerEvent($this)
                 );
 
-                $this->getProcess()->setTitle('Waiting for ' . implode(',', $this->queues));
+                $this->getProcess()->setTitle('Waiting for '.implode(',', $this->queues));
 
 
-                $this->getLogger()->debug('Sleeping for {seconds}s, no jobs on {queues}', array('queues'=>implode(', ',array_map(function($a){return $a->getName();}, $this->getQueues())), 'seconds'=>$interval));
+                $this->getLogger()->debug(
+                    'Sleeping for {seconds}s, no jobs on {queues}',
+                    [
+                        'queues' => implode(
+                            ', ',
+                            array_map(
+                                function ($a) {
+                                    return $a->getName();
+                                },
+                                $this->getQueues()
+                            )
+                        ),
+                        'seconds' => $interval,
+                    ]
+                );
 
                 sleep($interval);
 
                 continue;
             }
 
-            $this->getLogger()->notice('Starting work on {job}', array('job' => $job));
+            $this->getLogger()->notice('Starting work on {job}', ['job' => $job]);
 
             if ($job instanceof TrackableJobInterface) {
                 $job->setState(JobInterface::STATE_PERFORMING);
@@ -266,7 +283,7 @@ class Worker implements
                     exit(0);
                 } else {
                     // This is the parent.
-                    $title = 'Forked ' . $this->childProcess->getPid() . ' at ' . date('c');
+                    $title = 'Forked '.$this->childProcess->getPid().' at '.date('c');
                     $this->getProcess()->setTitle($title);
                     $this->getLogger()->debug($title);
 
@@ -275,7 +292,7 @@ class Worker implements
 
                     if (false === $this->childProcess->isCleanExit()) {
                         $exception = new DirtyExitException(
-                            'Job dirty exited with code ' . $this->childProcess->getExitCode()
+                            'Job dirty exited with code '.$this->childProcess->getExitCode()
                         );
 
                         $this->handleFailedJob($job, $exception);
@@ -316,18 +333,18 @@ class Worker implements
         foreach ($this->queues as $queue) {
             $this->getLogger()->debug(
                 'Checking {queue} for jobs',
-                array(
-                    'queue' => $queue
-                )
+                [
+                    'queue' => $queue,
+                ]
             );
             $job = $queue->dequeue();
             if (false === (null === $job)) {
                 $this->getLogger()->info(
                     'Found job {job} on queue {queue}',
-                    array(
+                    [
                         'job' => $job,
                         'queue' => $queue,
-                    )
+                    ]
                 );
 
                 return $job;
@@ -343,6 +360,7 @@ class Worker implements
      * @throws InvalidJobException if the given job cannot actually be asked to perform.
      *
      * @param JobInterface $job The job to be processed.
+     *
      * @return bool If job performed or not.
      */
     public function perform(JobInterface $job)
@@ -360,7 +378,7 @@ class Worker implements
 
             if (false === ($jobInstance instanceof PerformantJobInterface)) {
                 throw new InvalidJobException(
-                    'Job ' . $job->getId(). ' "' . get_class($jobInstance) . '" needs to implement Resque\JobInterface'
+                    'Job '.$job->getId().' "'.get_class($jobInstance).'" needs to implement Resque\JobInterface'
                 );
             }
 
@@ -381,7 +399,7 @@ class Worker implements
             $job->setState(JobInterface::STATE_COMPLETE);
         }
 
-        $this->getLogger()->notice('{job} has successfully processed', array('job' => $job));
+        $this->getLogger()->notice('{job} has successfully processed', ['job' => $job]);
 
         $this->eventDispatcher->dispatch(ResqueJobEvents::PERFORMED, new WorkerJobEvent($this, $job));
 
@@ -392,7 +410,7 @@ class Worker implements
      * Handle failed job
      *
      * @param JobInterface $job The job that failed.
-     * @param \Exception $exception The reason the job failed.
+     * @param \Exception   $exception The reason the job failed.
      */
     protected function handleFailedJob(JobInterface $job, \Exception $exception)
     {
@@ -402,11 +420,11 @@ class Worker implements
 
         $this->getLogger()->error(
             'Perform failure on {job}, {message}',
-            array(
+            [
                 'job' => $job,
                 'message' => $exception->getMessage(),
-                'exception' => $exception
-            )
+                'exception' => $exception,
+            ]
         );
 
         $this->eventDispatcher->dispatch(
@@ -424,7 +442,7 @@ class Worker implements
     protected function workComplete(JobInterface $job)
     {
         $this->setCurrentJob(null);
-        $this->getLogger()->debug('Work complete on {job}', array('job' => $job));
+        $this->getLogger()->debug('Work complete on {job}', ['job' => $job]);
     }
 
     /**
@@ -435,7 +453,7 @@ class Worker implements
     public function getId()
     {
         if (null === $this->id) {
-            $this->setId($this->getHostname() . ':' . $this->getProcess()->getPid() . ':' . implode(',', $this->queues));
+            $this->setId($this->getHostname().':'.$this->getProcess()->getPid().':'.implode(',', $this->queues));
         }
 
         return $this->id;
@@ -468,9 +486,13 @@ class Worker implements
         declare(ticks = 100);
 
         $worker = $this;
-        $signal_handler = function($cbname) use($worker){
-            return function($signo) use($worker, $cbname){
-                $worker->getLogger()->debug("Signal {signo} at pid:{pid} received, doing {action}", array('signo'=>$signo, 'action'=>$cbname, 'pid'=>getmypid()));
+        $signal_handler = function ($cbname) use ($worker) {
+            return function ($signo) use ($worker, $cbname) {
+                $worker->getLogger()->debug(
+                    "Signal {signo} at pid:{pid} received, doing {action}",
+                    ['signo' => $signo, 'action' => $cbname, 'pid' => getmypid()]
+                );
+
                 return $worker->$cbname($signo);
             };
         };
@@ -493,9 +515,9 @@ class Worker implements
     {
         $this->paused = true;
 
-        if($this->getProcess()->getPid() == getmypid()) {
+        if ($this->getProcess()->getPid() == getmypid()) {
             $this->getLogger()->notice('SIGUSR2 received; pausing job processing');
-        }else{
+        } else {
             $this->getProcess()->kill(SIGUSR2);
         }
 
@@ -509,9 +531,9 @@ class Worker implements
     {
         $this->paused = false;
 
-        if($this->getProcess()->getPid() == getmypid()) {
+        if ($this->getProcess()->getPid() == getmypid()) {
             $this->getLogger()->notice('SIGCONT received; resuming job processing');
-        }else{
+        } else {
             $this->getProcess()->kill(SIGCONT);
         }
     }
@@ -522,10 +544,10 @@ class Worker implements
      */
     public function halt()
     {
-        if($this->getProcess()->getPid() == getmypid()) {
+        if ($this->getProcess()->getPid() == getmypid()) {
             $this->stop();
             $this->haltCurrentJob();
-        }else{
+        } else {
             $this->getProcess()->kill(SIGINT);
         }
     }
@@ -537,9 +559,9 @@ class Worker implements
     public function stop()
     {
         $this->shutdown = true;
-        if($this->getProcess()->getPid() == getmypid()) {
-            $this->getLogger()->notice('Worker {worker} shutting down', array('worker' => $this));
-        }else{
+        if ($this->getProcess()->getPid() == getmypid()) {
+            $this->getLogger()->notice('Worker {worker} shutting down', ['worker' => $this]);
+        } else {
             $this->getProcess()->kill(SIGQUIT);
         }
     }
@@ -547,10 +569,11 @@ class Worker implements
     /**
      * Get worker ready to start again.
      */
-    public function reset(){
+    public function reset()
+    {
         $this->setId(null);
         $this->shutdown = false;
-        $this->getLogger()->notice('Worker {worker} reset', array('worker' => $this));
+        $this->getLogger()->notice('Worker {worker} reset', ['worker' => $this]);
     }
 
     /**
@@ -562,18 +585,18 @@ class Worker implements
         $currentJob = $this->getCurrentJob();
 
         if (null === $this->childProcess || !$this->childProcess->getPid()) {
-            $this->getLogger()->debug('No child to kill for worker {worker}', array('worker' => $this));
+            $this->getLogger()->debug('No child to kill for worker {worker}', ['worker' => $this]);
 
             return;
         }
 
         $this->getLogger()->warning(
             'Worker {worker} killing active child {childPid}',
-            array(
+            [
                 'worker' => $this,
                 'childProcess' => $this->childProcess,
-                'childPid' => $this->childProcess->getPid()
-            )
+                'childPid' => $this->childProcess->getPid(),
+            ]
         );
 
         $this->childProcess->kill();
@@ -598,6 +621,7 @@ class Worker implements
      * Sets which job the worker is currently working on, and records it in redis.
      *
      * @param JobInterface|null $job The job being worked on, or null if the worker isn't processing a job anymore.
+     *
      * @throws ResqueRuntimeException when current job is not cleared before setting a new one.
      * @return $this
      */
@@ -635,6 +659,7 @@ class Worker implements
      * Set fork to perform job
      *
      * @param bool $fork If the worker should fork to do work
+     *
      * @return $this
      */
     public function setForkOnPerform($fork)

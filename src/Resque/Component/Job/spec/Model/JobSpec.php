@@ -53,13 +53,15 @@ class JobSpec extends ObjectBehavior
 
     function its_arguments_are_mutable()
     {
-        $this->setArguments(array('foo' => 'bar'));
-        $this->getArguments()->shouldReturn(array('foo' => 'bar'));
+        $this->setArguments(['foo' => 'bar']);
+        $this->getArguments()->shouldReturn(['foo' => 'bar']);
     }
 
     function it_should_only_allow_an_array_as_arguments()
     {
-        $this->shouldThrow(new \InvalidArgumentException('Supplied $args must be an array'))->duringSetArguments(new \stdClass);
+        $this->shouldThrow(new \InvalidArgumentException('Supplied $args must be an array'))->duringSetArguments(
+            new \stdClass
+        );
     }
 
     function it_should_have_no_state_by_default()
@@ -92,7 +94,9 @@ class JobSpec extends ObjectBehavior
 
     function it_can_decode_a_job()
     {
-        $this->decode('{"class":"Acme\\\\Job","args":[[]],"id":123}')->shouldReturnAnInstanceOf('Resque\Component\Job\Model\Job');
+        $this->decode('{"class":"Acme\\\\Job","args":[[]],"id":123}')->shouldReturnAnInstanceOf(
+            'Resque\Component\Job\Model\Job'
+        );
     }
 
     function it_should_not_allow_decode_to_return_job_on_invalid_json()

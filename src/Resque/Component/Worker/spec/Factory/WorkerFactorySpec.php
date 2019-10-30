@@ -43,7 +43,9 @@ class WorkerFactorySpec extends ObjectBehavior
     ) {
         $queueFactory->createQueue('high')->shouldBeCalled()->willReturn($queueHigh);
         $queueFactory->createQueue('low')->shouldBeCalled()->willReturn($queueLow);
-        $this->createWorkerFromId('localhost:4753:high,low')->shouldReturnAnInstanceOf('Resque\Component\Worker\Worker');
+        $this->createWorkerFromId('localhost:4753:high,low')->shouldReturnAnInstanceOf(
+            'Resque\Component\Worker\Worker'
+        );
     }
 
     function it_sets_the_workers_hostname_on_create(

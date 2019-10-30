@@ -50,6 +50,7 @@ interface JobInterface
      * Set arguments.
      *
      * @param array $args An array of parameters for the job.
+     *
      * @throws \InvalidArgumentException when $args is not an array.
      *
      * @return void
@@ -85,9 +86,10 @@ interface JobInterface
      * created from.
      *
      * @deprecated The job object should not care about how it is "encoded" in storage.
-     * @todo move the responsibility of decoding/encoding to the storage layer.
+     * @todo       move the responsibility of decoding/encoding to the storage layer.
      *
      * @param mixed $payload The encoded data from self->encode()
+     *
      * @return static
      */
     public static function decode($payload);

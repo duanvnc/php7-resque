@@ -54,14 +54,14 @@ class RedisQueueRegistryAdapterSpec extends ObjectBehavior
         $redis->llen('queue:high')->shouldBeCalled();
         $redis->del('queue:high')->shouldBeCalled();
         $redis->srem('queues', 'high')->shouldBeCalled();
-        $redis->exec()->shouldBeCalled()->willReturn(array(5));
+        $redis->exec()->shouldBeCalled()->willReturn([5]);
         $this->delete($queue)->shouldReturn(5);
     }
 
     function it_loads_all_queue_names_from_redis(
         RedisClientInterface $redis
     ) {
-        $redis->smembers('queues')->shouldBeCalled()->willReturn(array('high', 'low', 'medium'));
-        $this->all()->shouldReturn(array('high', 'low', 'medium'));
+        $redis->smembers('queues')->shouldBeCalled()->willReturn(['high', 'low', 'medium']);
+        $this->all()->shouldReturn(['high', 'low', 'medium']);
     }
 }

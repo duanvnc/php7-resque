@@ -11,9 +11,7 @@ use Resque\Component\Queue\ResqueQueueEvents;
 /**
  * Queue registry
  */
-class QueueRegistry implements
-    QueueRegistryInterface,
-    QueueFactoryInterface
+class QueueRegistry implements QueueRegistryInterface, QueueFactoryInterface
 {
     /**
      * @var EventDispatcherInterface
@@ -33,9 +31,9 @@ class QueueRegistry implements
     /**
      * Constructor
      *
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface      $eventDispatcher
      * @param QueueRegistryAdapterInterface $adapter
-     * @param QueueFactoryInterface $factory
+     * @param QueueFactoryInterface         $factory
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -86,7 +84,7 @@ class QueueRegistry implements
      */
     public function all()
     {
-        $queues = array();
+        $queues = [];
 
         foreach ($this->adapter->all() as $queueName) {
             $queues[$queueName] = $this->createQueue($queueName);

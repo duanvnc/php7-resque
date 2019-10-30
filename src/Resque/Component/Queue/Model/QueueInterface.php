@@ -31,6 +31,7 @@ interface QueueInterface
      * Places a job at the end of a this queue.
      *
      * @param JobInterface $job The Job to enqueue.
+     *
      * @return bool True if successful, false otherwise.
      */
     public function enqueue(JobInterface $job);

@@ -9,11 +9,7 @@ use Resque\Component\Queue\Model\QueueInterface;
 /**
  * Resque Job
  */
-class Job implements
-    JobInterface,
-    TrackableJobInterface,
-    OriginQueueAwareInterface,
-    FilterableJobInterface
+class Job implements JobInterface, TrackableJobInterface, OriginQueueAwareInterface, FilterableJobInterface
 {
     /**
      * @var string Unique identifier of this job
@@ -45,10 +41,10 @@ class Job implements
      *
      * Instantiate a new instance of a job.
      *
-     * @param string $jobClass The fully quantified class name of the target job to run
-     * @param array $arguments An array of arguments/parameters for the job
+     * @param string $jobClass  The fully quantified class name of the target job to run
+     * @param array  $arguments An array of arguments/parameters for the job
      */
-    public function __construct($jobClass = null, $arguments = array())
+    public function __construct($jobClass = null, $arguments = [])
     {
         $this->class = $jobClass;
         $this->setArguments($arguments);
@@ -159,7 +155,7 @@ class Job implements
      */
     public function __toString()
     {
-        return 'Job' . $this->encode();
+        return 'Job'.$this->encode();
     }
 
     /**
@@ -175,9 +171,9 @@ class Job implements
     /**
      * {@inheritdoc}
      */
-    public static function matchFilter(JobInterface $job, $filter = array())
+    public static function matchFilter(JobInterface $job, $filter = [])
     {
-        $filters = array(
+        $filters = [
             'id' => function (JobInterface $job, $filter) {
                 if (isset($filter['id'])) {
 
@@ -194,9 +190,9 @@ class Job implements
 
                 return null;
             },
-        );
+        ];
 
-        $results = array();
+        $results = [];
 
         foreach ($filters as $filterName => $filterCallback) {
             $result = $filterCallback($job, $filter);
@@ -218,12 +214,12 @@ class Job implements
     public function encode()
     {
         return json_encode(
-            array(
+            [
                 'class' => $this->getJobClass(),
-                'args' => array($this->getArguments()),
+                'args' => [$this->getArguments()],
                 'id' => $this->getId(),
                 'queue_time' => microtime(true), // @todo this isn't queue time. $queue->enqueue() is queue time.
-            )
+            ]
         );
     }
 

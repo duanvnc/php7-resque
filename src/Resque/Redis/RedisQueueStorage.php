@@ -14,9 +14,7 @@ use Resque\Component\Queue\Storage\QueueStorageInterface;
  *
  * Uses redis to store the queue.
  */
-class RedisQueueStorage implements
-    RedisClientAwareInterface,
-    QueueStorageInterface
+class RedisQueueStorage implements RedisClientAwareInterface, QueueStorageInterface
 {
     /**
      * @var RedisClientInterface A redis connection.
@@ -49,11 +47,12 @@ class RedisQueueStorage implements
      * Get redis key.
      *
      * @param QueueInterface $queue A the queue to the get the Resque Redis key name for.
+     *
      * @return string Key name for Redis.
      */
     protected function getRedisKey(QueueInterface $queue)
     {
-        return 'queue:' . $queue->getName();
+        return 'queue:'.$queue->getName();
     }
 
     /**
@@ -92,13 +91,13 @@ class RedisQueueStorage implements
     /**
      * {@inheritDoc}
      */
-    public function remove(QueueInterface $queue, $filter = array())
+    public function remove(QueueInterface $queue, $filter = [])
     {
         $jobsRemoved = 0;
 
         $queueKey = $this->getRedisKey($queue);
-        $tmpKey = $queueKey . ':removal:' . time() . ':' . uniqid();
-        $enqueueKey = $tmpKey . ':enqueue';
+        $tmpKey = $queueKey.':removal:'.time().':'.uniqid();
+        $enqueueKey = $tmpKey.':enqueue';
 
         // Move each job from original queue to a temporary list and leave
         while (\true) {

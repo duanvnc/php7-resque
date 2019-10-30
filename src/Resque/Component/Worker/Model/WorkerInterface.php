@@ -21,6 +21,7 @@ interface WorkerInterface
      * Set hostname
      *
      * @param string $hostname The name of the host the worker is/was running on.
+     *
      * @return $this
      */
     public function setHostname($hostname);
@@ -36,6 +37,7 @@ interface WorkerInterface
      * Add queue
      *
      * @param QueueInterface $queue The queue to add to the worker.
+     *
      * @return $this
      */
     public function addQueue(QueueInterface $queue);
@@ -60,6 +62,7 @@ interface WorkerInterface
      * Set process
      *
      * @param Process $process
+     *
      * @return $this
      */
     public function setProcess(Process $process);
@@ -75,6 +78,7 @@ interface WorkerInterface
      * Set current job
      *
      * @param JobInterface|null $job The job being worked on, or null if the worker isn't processing a job anymore.
+     *
      * @throws ResqueRuntimeException when the current job is not cleared before setting a new one.
      * @return $this
      */

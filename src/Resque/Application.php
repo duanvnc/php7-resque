@@ -1,4 +1,5 @@
 <?php
+
 namespace Resque;
 
 use Predis\Client;
@@ -41,7 +42,7 @@ class Application
     /**
      * @var array Array of config vars, loaded from ENV vars.
      */
-    public $config = array();
+    public $config = [];
 
     /**
      * @var LoggerInterface
@@ -111,7 +112,7 @@ class Application
     /**
      * @var \Resque\Component\Worker\Model\WorkerInterface[]
      */
-    public $workers = array();
+    public $workers = [];
 
     /**
      * @var
@@ -171,7 +172,7 @@ class Application
      */
     protected function configure()
     {
-        $this->config = array(
+        $this->config = [
             'app_include' => getenv('APP_INCLUDE'),
             'worker_count' => false === getenv('COUNT') ? 1 : getenv('COUNT'),
             'queues' => getenv('QUEUE'),
@@ -182,7 +183,7 @@ class Application
             'logging' => (bool)getenv('LOGGING'),
             'verbose' => (bool)getenv('VERBOSE'),
             'very_verbose' => (bool)getenv('VVERBOSE'),
-        );
+        ];
     }
 
     /**
@@ -244,10 +245,9 @@ class Application
         if (null === $this->redisClient) {
             $this->redisClient = new PredisBridge(
                 new Client(
-                    $this->config['redis_dsn'],
-                    array(
-                        'prefix' => $this->config['redis_prefix'] . ':'
-                    )
+                    $this->config['redis_dsn'], [
+                        'prefix' => $this->config['redis_prefix'].':',
+                    ]
                 )
             );
         }
@@ -259,15 +259,15 @@ class Application
 
         $this->eventDispatcher->addListener(
             ResqueWorkerEvents::BEFORE_FORK_TO_PERFORM,
-            array($redisEventListener, 'disconnectFromRedis')
+            [$redisEventListener, 'disconnectFromRedis']
         );
         $this->eventDispatcher->addListener(
             ResqueEvents::PRE_FORK,
-            array($redisEventListener, 'disconnectFromRedis')
+            [$redisEventListener, 'disconnectFromRedis']
         );
         $this->eventDispatcher->addListener(
             ResqueWorkerEvents::WAIT_NO_JOB,
-            array($redisEventListener, 'disconnectFromRedis')
+            [$redisEventListener, 'disconnectFromRedis']
         );
     }
 
@@ -296,9 +296,7 @@ class Application
     {
         if (null === $this->queueRegistry) {
             $this->queueRegistry = new QueueRegistry(
-                $this->eventDispatcher,
-                $this->queueRegistryAdapter,
-                $this->queueFactory
+                $this->eventDispatcher, $this->queueRegistryAdapter, $this->queueFactory
             );
         }
     }
@@ -308,7 +306,7 @@ class Application
         if (null === $this->queues) {
             $configQueues = explode(',', $this->config['queues']);
 
-            $queues = array();
+            $queues = [];
             if (in_array('*', $configQueues)) {
                 $wildcard = new \Resque\Component\Queue\WildcardQueue($this->queueRegistry);
                 $queues[] = $wildcard;
@@ -371,10 +369,7 @@ class Application
     {
         if (null === $this->workerFactory) {
             $this->workerFactory = new WorkerFactory(
-                $this->queueFactory,
-                $this->jobInstanceFactory,
-                $this->eventDispatcher,
-                $this->system
+                $this->queueFactory, $this->jobInstanceFactory, $this->eventDispatcher, $this->system
             );
         }
     }
@@ -390,9 +385,7 @@ class Application
     {
         if (null === $this->workerRegistry) {
             $this->workerRegistry = new WorkerRegistry(
-                $this->workerRegistryAdapter,
-                $this->eventDispatcher,
-                $this->workerFactory
+                $this->workerRegistryAdapter, $this->eventDispatcher, $this->workerFactory
             );
         }
 
@@ -414,7 +407,7 @@ class Application
             throw new ResqueRuntimeException("Queues not initialized correctly.");
         }
 
-        $this->workers = array();
+        $this->workers = [];
         for ($i = 0; $i < $this->config['worker_count']; ++$i) {
             $worker = $this->workerFactory->createWorker();
             $worker->setLogger($this->logger);
@@ -443,13 +436,13 @@ class Application
         $this->foreman->pruneDeadWorkers();
         $this->foreman->work($this->workers);
         echo sprintf(
-            '%d workers attached to the %s queues successfully started.' . PHP_EOL,
+            '%d workers attached to the %s queues successfully started.'.PHP_EOL,
             count($this->workers),
             $this->queueDescription()
         );
 
         echo sprintf(
-            'Workers (%s)' . PHP_EOL,
+            'Workers (%s)'.PHP_EOL,
             implode(', ', $this->workers)
         );
 

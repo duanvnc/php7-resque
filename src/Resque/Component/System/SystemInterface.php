@@ -1,4 +1,5 @@
 <?php
+
 namespace Resque\Component\System;
 
 use Resque\Component\Core\Process;

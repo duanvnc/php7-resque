@@ -25,10 +25,9 @@ abstract class ResqueTestCase extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         $predis = new Client(
-            null,
-            array(
-                'prefix' => 'resquetest:'
-            )
+            null, [
+                'prefix' => 'resquetest:',
+            ]
         );
 
         $this->redis = new PredisBridge($predis);

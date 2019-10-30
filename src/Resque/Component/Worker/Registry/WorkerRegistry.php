@@ -12,8 +12,7 @@ use Resque\Component\Worker\ResqueWorkerEvents;
 /**
  * Resque redis worker registry
  */
-class WorkerRegistry implements
-    WorkerRegistryInterface
+class WorkerRegistry implements WorkerRegistryInterface
 {
     /**
      * @var WorkerRegistryAdapterInterface
@@ -34,8 +33,8 @@ class WorkerRegistry implements
      * Constructor.
      *
      * @param WorkerRegistryAdapterInterface $adapter
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param WorkerFactoryInterface $workerFactory
+     * @param EventDispatcherInterface       $eventDispatcher
+     * @param WorkerFactoryInterface         $workerFactory
      */
     public function __construct(
         WorkerRegistryAdapterInterface $adapter,
@@ -53,10 +52,12 @@ class WorkerRegistry implements
     public function register(WorkerInterface $worker)
     {
         if ($this->isRegistered($worker)) {
-            throw new ResqueRuntimeException(sprintf(
-                'Cannot double register worker "%s", deregister it before calling register again.',
-                $worker->getId()
-            ));
+            throw new ResqueRuntimeException(
+                sprintf(
+                    'Cannot double register worker "%s", deregister it before calling register again.',
+                    $worker->getId()
+                )
+            );
         }
 
         $this->adapter->save($worker);
@@ -94,11 +95,11 @@ class WorkerRegistry implements
         $workerIds = $this->adapter->all();
 
         if (!is_array($workerIds)) {
-            return array();
+            return [];
         }
 
         /** @var WorkerInterface[] $instances */
-        $instances = array();
+        $instances = [];
         foreach ($workerIds as $workerId) {
             $instances[] = $this->workerFactory->createWorkerFromId($workerId);
         }

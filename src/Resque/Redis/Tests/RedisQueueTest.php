@@ -53,21 +53,20 @@ class RedisQueueTest extends ResqueTestCase
     {
         return $this->markTestIncomplete();
 
-        $args = array(
+        $args = [
             'int' => 123,
-            'numArray' => array(
+            'numArray' => [
                 1,
                 2,
-            ),
-            'assocArray' => array(
+            ],
+            'assocArray' => [
                 'key1' => 'value1',
-                'key2' => 'value2'
-            ),
-        );
+                'key2' => 'value2',
+            ],
+        ];
 
         $pushedJob = new Job(
-            'Test_Job',
-            $args
+            'Test_Job', $args
         );
 
         $this->queue->push($pushedJob);
@@ -91,7 +90,7 @@ class RedisQueueTest extends ResqueTestCase
         $this->queue->push(new Job('JobToStay'));
         $this->assertEquals(2, $this->queue->count());
 
-        $this->queue->remove(array('id' => $job->getId()));
+        $this->queue->remove(['id' => $job->getId()]);
         $this->assertEquals(1, $this->queue->count());
 
         $this->queue->remove();
